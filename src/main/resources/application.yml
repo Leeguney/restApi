@@ -6,7 +6,7 @@ spring:
     - local
     
 server:
-  port: 8080
+  port: ${port:8080}
   compression:
     enabled: true
     

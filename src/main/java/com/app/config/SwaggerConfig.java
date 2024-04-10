@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class SwaggerConfig {
 
     @Bean
-    OpenAPI openAPI(){
+    public OpenAPI openAPI(){
     	
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")

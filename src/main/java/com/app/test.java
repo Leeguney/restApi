@@ -68,7 +68,7 @@ public class test {
 //			}
 			
 			return month;
-		}).toList();
+		}).collect(Collectors.toList());
 		
 		
 		System.out.println(mocList);
