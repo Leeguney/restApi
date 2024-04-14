@@ -13,11 +13,16 @@ public class ViewController {
 
 	@GetMapping("/redoc")
     public String redoc(){
-		return "index";
+		return "html/index";
     }
 	
 	@GetMapping("/camel")
 	public String camel(){
+		return "html/ConvertCamel";
+	}
+	
+	@GetMapping("/jsp")
+	public String jsp(){
 		return "ConvertCamel";
 	}
 	
