@@ -12,7 +12,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/");
-		registry.addResourceHandler("/redoc/**").addResourceLocations("classpath:/redoc/");
+		registry.addResourceHandler("/**").addResourceLocations("classpath:/templates/");
     }
 	
 }
