@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- <mapper namespace="com.golfzonretail.rest.iut.cmmon.repository.CommonMapper">
+
+    <sql id="strPaging">
+        <if test="param.pageNo != null and param.pageSize != null">
+            <bind name="strPaging" value="@com.golfzonretail.rest.iut.cmmon.util.CommonUtil@strPaging(param.pageNo, param.pageSize)"/>
+        </if>
+        ${strPaging}
+    </sql>
+    
+</mapper> -->

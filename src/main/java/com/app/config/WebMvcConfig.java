@@ -1,10 +1,14 @@
 package com.app.config;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import com.app.common.util.MessagesUtils;
 
 @Configuration
 //@EnableWebMvc
@@ -16,8 +20,22 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/**").addResourceLocations("classpath:/templates/html/");
     }
 	
-//	public void viewResource(InternalResourceViewResolver registry) {
-//		registry.setPrefix(null);
-//	}
-	
+	@Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:/messages/messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setAlwaysUseMessageFormat(true);
+        messageSource.setUseCodeAsDefaultMessage(true);
+        messageSource.setFallbackToSystemLocale(true);
+        return messageSource;
+    }
+
+
+    @Bean
+    public MessagesUtils messagesUtility() {
+        MessagesUtils messagesUtility = new MessagesUtils();
+        messagesUtility.setMessageSourceAccessor(new MessageSourceAccessor(this.messageSource()));
+        return messagesUtility;
+    }
 }
