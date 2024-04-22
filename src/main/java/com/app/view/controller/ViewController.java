@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ViewController {
 
 	@GetMapping("/")
-	public String camel(){
-		return "html/ConvertCamel";
+	public String root(){
+		return "redirect:/redoc";
 	}
 	
 	@GetMapping("/redoc")
