@@ -1,17 +1,25 @@
 package com.app.common.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CaseFormat;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @SuppressWarnings("unchecked")
 public class CommonUtil {
@@ -20,6 +28,9 @@ public class CommonUtil {
     
     private static final ModelMapper mapper = new ModelMapper();
 
+    private static final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CASE_WITH_UNDERSCORES).create();
+    
+    
     /**
      * mybatis paging 문자열 생성
      * 
@@ -130,5 +141,71 @@ public class CommonUtil {
         }
         
         return returnMap;
+    }
+    
+    /**
+     * 변수 스네이크 케이스로 변환
+     * 
+     * @param 
+     * @return T
+     * @author guney
+     * @date 2024. 4. 23.
+     */
+    public static <T> T mapParamConvert(T o) {
+        Map<String, Object> returnMap = null;
+        
+        if (o instanceof Map) {
+            returnMap = new HashMap<>();
+            Map<String, Object> readMap = om.convertValue(o, Map.class);
+            
+            for (Entry<String, Object> r : readMap.entrySet()) {
+                returnMap.put(convertCamelToSnake(r.getKey()), r.getValue());
+            }
+        }
+        
+        return ObjectUtils.isNotEmpty(returnMap) ? (T) returnMap : o;
+    }
+    
+    /**
+     * QureyParam 생성(키워드 암호화)
+     * 
+     * @param String url : 요청url
+     *      , String kwd : 키워드 검색어
+     *      , Object o   : Dto
+     * @return String
+     * @author guney
+     * @throws UnsupportedEncodingException 
+     * @date 2024. 3. 15.
+     */
+    public static String getQureyParam(String url, String kwd, Object o) throws UnsupportedEncodingException {
+        kwd = URLEncoder.encode(kwd, StandardCharsets.UTF_8.toString());
+        
+        Map<String, Object> m = om.convertValue(o, HashMap.class);
+        UriComponentsBuilder p = UriComponentsBuilder.fromUriString(url);
+        
+        for (Entry<String, Object> e : m.entrySet()) {
+            if (ObjectUtils.isNotEmpty(e.getValue())) p.queryParam(e.getKey(), e.getValue());
+        }
+        
+        return p.build().toUri().toString();
+    }
+    
+    /**
+     * QureyParam 생성
+     * 
+     * @param 
+     * @return String
+     * @author guney
+     * @date 2024. 3. 16.
+     */
+    public static String getQureyParam(String url, Object o) throws UnsupportedEncodingException {
+        Map<String, Object> m = om.convertValue(o, HashMap.class);
+        UriComponentsBuilder p = UriComponentsBuilder.fromUriString(url);
+        
+        for (Entry<String, Object> e : m.entrySet()) {
+            if (ObjectUtils.isNotEmpty(e.getValue())) p.queryParam(e.getKey(), e.getValue());
+        }
+        
+        return p.build().toUri().toString();
     }
 }
