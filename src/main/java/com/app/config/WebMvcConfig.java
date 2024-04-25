@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -37,5 +38,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         MessagesUtils messagesUtility = new MessagesUtils();
         messagesUtility.setMessageSourceAccessor(new MessageSourceAccessor(this.messageSource()));
         return messagesUtility;
+    }
+    
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("https://vue-front-807ffc6b572e.herokuapp.com")
+                .allowedMethods("*"); //"GET", "POST", "PUT", "DELETE", "FETCH"
     }
 }
