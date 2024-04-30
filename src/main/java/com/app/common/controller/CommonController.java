@@ -83,7 +83,7 @@ public class CommonController {
 			
 			long fileLength = file.length();
 			
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
             for (int i = 0; i < fileName.length(); i++) {
                 char c = fileName.charAt(i);
                 if (c > '~') {
