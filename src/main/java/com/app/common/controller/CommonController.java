@@ -1,14 +1,9 @@
 package com.app.common.controller;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +14,7 @@ import com.app.common.constant.CommonConstant;
 import com.app.common.core.annotations.ApiDocumentResponse;
 import com.app.common.dto.ApiBodyDTO;
 import com.app.common.dto.req.FileGenReqDTO;
+import com.app.common.service.CommonService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,8 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "/com")
 public class CommonController {
 
-	@Autowired
-	private CommonConstant commonConstant;
+	private final CommonConstant commonConstant;
+	
+	private final CommonService commonService;
 	
 	@ApiDocumentResponse
     @Operation(summary = "파일생성", description = "File Generator")
@@ -49,80 +46,20 @@ public class CommonController {
 		}
 		
 		try {
-			file = new File(file.getPath().concat("/filename.java"));
+			file = new File(file.getPath().concat("/".concat(fileGenReqDTO.getData().getFileNm())));
 			
 			if (file.createNewFile()) {
 				FileWriter fileWriter = new FileWriter(file);
 				fileWriter.write(fileGenReqDTO.getData().getCamelStr());
 				fileWriter.close();
 				
-				fileDownload(response, file);
+				commonService.fileDownload(response, file);
 			} else {
 				log.info("File already exists.");
 			}
 		} catch (IOException e) {
 			log.error("An error occurred.");
 			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 
-	 * 
-	 * @parma  : File file
-	 * @return : void
-	 * @throws UnsupportedEncodingException 
-	 * @user   : guney
-	 * @date   : 2024. 4. 14.
-	 * @since  : 1.0
-	 */
-	public void fileDownload(HttpServletResponse response, File file) throws UnsupportedEncodingException {
-		if (file.isFile()) {
-			String fileName = "filename.java";
-			String saveFileName = commonConstant.FILE_PATH.concat("/".concat(fileName));
-			
-			long fileLength = file.length();
-			
-			StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < fileName.length(); i++) {
-                char c = fileName.charAt(i);
-                if (c > '~') {
-                    sb.append(URLEncoder.encode("" + c, "UTF-8"));
-                } else {
-                    sb.append(c);
-                }
-            }
-            fileName = sb.toString();
-            
-			response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ";");
-			response.setHeader("Content-Transfer-Encoding", "binary");
-			response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-			response.setHeader("Content-Length", "" + fileLength);
-			response.setHeader("Pragma", "no-cache;");
-			response.setHeader("Expires", "-1;");
-			
-			try {
-				FileInputStream fis = new FileInputStream(saveFileName);
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				
-				int readCount = 0;
-				byte[] buffer = new byte[1024];
-				
-				while((readCount = fis.read(buffer)) != -1){
-					out.write(buffer, 0, readCount);
-				}
-				out.writeTo(response.getOutputStream());
-				
-				fis.close();
-				out.close();
-				
-				if (!file.delete()) {
-					log.error("delete File Info : {}", file);
-				}
-				
-			} catch(Exception ex){
-				throw new RuntimeException("file Save Error");
-			}
 		}
 	}
 
