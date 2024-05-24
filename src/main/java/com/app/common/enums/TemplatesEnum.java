@@ -13,16 +13,19 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TemplatesEnum {
 
-    CONTROLLER  ("controller"  , "templates/vm/controller.vm"),
-    SERVICE     ("service"     , "templates/vm/service.vm"),
-    IMPLEMENT   ("serviceimpl" , "templates/vm/implement.vm"),
-    REPOSITORY  ("repository"  , "templates/vm/repository.vm"),
-    DTO         ("dto"         , "templates/vm/dto.vm");
+    CONTROLLER  ("controller"  , "Controller"   , "templates/vm/controller.vm"),
+    SERVICE     ("service"     , "Service"      , "templates/vm/service.vm"),
+    IMPLEMENT   ("serviceimpl" , "ServiceImpl"  , "templates/vm/implement.vm"),
+    REPOSITORY  ("repository"  , "Mapper"       , "templates/vm/repository.vm"),
+    DTO         ("dto"         , "DTO"          , "templates/vm/dto.vm");
 
     @Getter
-    private String tplName;
+    private String folderNm;
     
     @Getter
-    private String tplPath;
+    private String fileNm;
+    
+    @Getter
+    private String vmPath;
     
 }

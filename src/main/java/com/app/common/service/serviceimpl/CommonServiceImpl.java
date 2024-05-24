@@ -48,30 +48,23 @@ public class CommonServiceImpl implements CommonService {
         
         try {
             String fileNm = CommonUtil.capitalize(fileGenReqDTO.getFileNm());
-            String dtoNm = CommonUtil.capitalize(fileNm).concat("DTO");
+            String dtoNm = CommonUtil.capitalize(fileNm).concat(TemplatesEnum.DTO.getFileNm());
             String filePathParam = StringUtils.isBlank(fileGenReqDTO.getFilePath()) ? commonConstant.FILE_PATH : fileGenReqDTO.getFilePath();
 //            String filePathParam = commonConstant.FILE_PATH;
             
             for (TemplatesEnum tpl : TemplatesEnum.values()) {
                 
                 File file = new File(filePathParam.concat("/")
-                                                  .concat(tpl.getTplName()));
+                                                  .concat(tpl.getFolderNm()));
                 
                 if (!file.exists()) {
                     //디렉토리 생성
                     file.mkdirs();
                 }
                 
-                String tplNm = switch (tpl.getTplName()) {
-                                   case "serviceimpl" -> "ServiceImpl";
-                                   case "repository" -> "mapper";
-                                   case "dto" -> "DTO";
-                                   default -> tpl.getTplName();
-                               };
-                
                 file = new File(file.getPath().concat("/")
-                                              .concat(CommonUtil.capitalize(fileGenReqDTO.getFileNm()))
-                                              .concat(CommonUtil.capitalize(tplNm))
+                                              .concat(fileNm)
+                                              .concat(tpl.getFileNm())
                                               .concat(".java"));
                 
                 //파일생성
@@ -91,7 +84,7 @@ public class CommonServiceImpl implements CommonService {
                     context.put("dtoVarName", CommonUtil.decapitalize(dtoNm));
                     
                     // 템플릿 파일 로딩
-                    Template template = velocityEngine.getTemplate(tpl.getTplPath());
+                    Template template = velocityEngine.getTemplate(tpl.getVmPath());
                     StringWriter writer = new StringWriter();
                     template.merge(context, writer);
                     
