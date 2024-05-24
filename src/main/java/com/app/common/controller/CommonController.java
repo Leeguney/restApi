@@ -1,8 +1,8 @@
 package com.app.common.controller;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,10 +28,10 @@ public class CommonController {
 	
 	@ApiDocumentResponse
     @Operation(summary = "파일생성", description = "File Generator")
-	@GetMapping(value = "/genFile", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void failDownload(HttpServletResponse response, @ModelAttribute FileGenReqDTO fileGenReqDTO){
+	@PostMapping(value = "/genFile", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void failDownload(HttpServletResponse response, @RequestBody FileGenReqDTO fileGenReqDTO){
 		try {
-			commonService.fileDownload(response, fileGenReqDTO);
+			commonService.createPackage(response, fileGenReqDTO);
 		} catch (ValidException e) {
 			log.error("CommonController failDownload ERROR : {}", e.getMessage());
 		}

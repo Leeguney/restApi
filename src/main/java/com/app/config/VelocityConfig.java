@@ -1,6 +1,7 @@
 package com.app.config;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +15,7 @@ public class VelocityConfig {
         VelocityEngine velocityEngine = new VelocityEngine();
         Properties properties = new Properties();
         properties.setProperty("resource.loader", "classpath");
-        properties.setProperty("classpath.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        properties.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
         velocityEngine.init(properties);
         return velocityEngine;
     }

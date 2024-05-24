@@ -13,4 +13,7 @@ public class RexUtil {
     //숫자형 체크
     public static final String NUMBER_PATTERN = "\\d*";
     
+    //슬래시, 백슬래시 체크
+    public static final String SLASH_BACKSLASH_PATTERN = "[/\\\\]";
+    
 }

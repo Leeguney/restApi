@@ -1,22 +1,24 @@
 package com.app.common.service.serviceimpl;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URLEncoder;
+import java.io.StringWriter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.stereotype.Service;
 
 import com.app.common.constant.CommonConstant;
 import com.app.common.dto.req.FileGenReqDTO;
+import com.app.common.enums.TemplatesEnum;
 import com.app.common.exception.DataCustomException;
 import com.app.common.exception.ValidException;
 import com.app.common.service.CommonService;
+import com.app.common.util.CommonUtil;
+import com.app.common.util.FileUtil;
+import com.app.common.util.RexUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,8 @@ public class CommonServiceImpl implements CommonService {
 
     private final CommonConstant commonConstant;
     
+    private final VelocityEngine velocityEngine;
+    
     /**
      * 파일 다운로드
      * 
@@ -39,70 +43,59 @@ public class CommonServiceImpl implements CommonService {
      * @date   : 2024. 4. 14.
      * @since  : 1.0
      */
-    public void fileDownload(HttpServletResponse response, FileGenReqDTO fileGenReqDTO) throws ValidException {
+    public void createPackage(HttpServletResponse response, FileGenReqDTO fileGenReqDTO) throws ValidException {
         log.info("fileGenReqDTO : {}", fileGenReqDTO);
         
         try {
-            String filePathParam = StringUtils.isBlank(fileGenReqDTO.getFilePath()) ? commonConstant.FILE_PATH : fileGenReqDTO.getFilePath(); 
-            File file = new File(filePathParam);
+            String fileNm = CommonUtil.capitalize(fileGenReqDTO.getFileNm());
+            String dtoNm = CommonUtil.capitalize(fileNm).concat("DTO");
+            String filePathParam = StringUtils.isBlank(fileGenReqDTO.getFilePath()) ? commonConstant.FILE_PATH : fileGenReqDTO.getFilePath();
+//            String filePathParam = commonConstant.FILE_PATH;
             
-            if (!file.exists()) {
-                //디렉토리 생성
-                file.mkdirs();
-            }
-            
-            file = new File(file.getPath().concat("/".concat(fileGenReqDTO.getFileNm())));
-            
-            //파일생성
-            if (file.createNewFile()) {
-                FileWriter fileWriter = new FileWriter(file);
-//                fileWriter.write(fileGenReqDTO.getCamelStr());
-                fileWriter.close();
+            for (TemplatesEnum tpl : TemplatesEnum.values()) {
                 
-                if (StringUtils.isBlank(fileGenReqDTO.getFilePath())) {
-                    String fileName = file.getName();
-                    String saveFileName = filePathParam.concat("/".concat(fileName));
+                File file = new File(filePathParam.concat("/")
+                                                  .concat(tpl.getTplName()));
+                
+                if (!file.exists()) {
+                    //디렉토리 생성
+                    file.mkdirs();
+                }
+                
+                String tplNm = switch (tpl.getTplName()) {
+                                   case "serviceimpl" -> "ServiceImpl";
+                                   case "repository" -> "mapper";
+                                   case "dto" -> "DTO";
+                                   default -> tpl.getTplName();
+                               };
+                
+                file = new File(file.getPath().concat("/")
+                                              .concat(CommonUtil.capitalize(fileGenReqDTO.getFileNm()))
+                                              .concat(CommonUtil.capitalize(tplNm))
+                                              .concat(".java"));
+                
+                //파일생성
+                if (file.createNewFile()) {
+//                D:\\sts-4.15.1.RELEASE\\workspace\\restApi\\src\\main\\java\\com\\app\\test
                     
-                    long fileLength = file.length();
+                    VelocityContext context = new VelocityContext();
                     
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < fileName.length(); i++) {
-                        char c = fileName.charAt(i);
-                        if (c > '~') {
-                            sb.append(URLEncoder.encode("" + c, "UTF-8"));
-                        } else {
-                            sb.append(c);
-                        }
-                    }
+                    context.put("packPath", filePathParam.contains("com")
+                        ? filePathParam.substring(filePathParam.indexOf("com"), filePathParam.length()).replaceAll(RexUtil.SLASH_BACKSLASH_PATTERN, ".")
+                        : "com.example");
                     
-                    fileName = sb.toString();
+                    context.put("fileNm", fileNm);
+                    context.put("fileVarName", CommonUtil.decapitalize(fileNm));
+                    context.put("methodNm", fileGenReqDTO.getMethodNm());
+                    context.put("dtoNm", dtoNm);
+                    context.put("dtoVarName", CommonUtil.decapitalize(dtoNm));
                     
-                    response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ";");
-                    response.setHeader("Content-Transfer-Encoding", "binary");
-                    response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-                    response.setHeader("Content-Length", "" + fileLength);
-                    response.setHeader("Pragma", "no-cache;");
-                    response.setHeader("Expires", "-1;");
+                    // 템플릿 파일 로딩
+                    Template template = velocityEngine.getTemplate(tpl.getTplPath());
+                    StringWriter writer = new StringWriter();
+                    template.merge(context, writer);
                     
-                    FileInputStream fis = new FileInputStream(saveFileName);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    
-                    int readCount = 0;
-                    byte[] buffer = new byte[1024];
-                    
-                    while((readCount = fis.read(buffer)) != -1){
-                        out.write(buffer, 0, readCount);
-                    }
-                    out.writeTo(response.getOutputStream());
-                    
-                    fis.close();
-                    out.close();
-                    
-                    //파일삭제
-                    if (!file.delete()) {
-                        log.error("delete File Info : {}", file);
-                        throw new ValidException("파일 삭제에 실패하였습니다.");
-                    }
+                    FileUtil.writeFile(file, writer.toString());
                 }
             }
         } catch(IOException ex){

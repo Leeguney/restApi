@@ -6,5 +6,5 @@ import com.app.common.exception.ValidException;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface CommonService {
-    public void fileDownload(HttpServletResponse response, FileGenReqDTO fileGenReqDTO) throws ValidException;
+    public void createPackage(HttpServletResponse response, FileGenReqDTO fileGenReqDTO) throws ValidException;
 }

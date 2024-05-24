@@ -20,6 +20,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.app.common.enums.TemplatesEnum;
 import com.app.common.util.CommonUtil;
 import com.app.common.util.PackageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,8 +34,14 @@ import lombok.extern.slf4j.Slf4j;
 public class test {
     
 	public static void main(String[] args) {
-	    test3();
+	    test4();
 	}
+	
+	public static void test4() {
+	    for (TemplatesEnum el : TemplatesEnum.values()) {
+            
+        }
+    }
 	
 	public static void test3() {
 //	    System.out.println(PackageUtil.randomSelection("com.example", "Test", "MyDto"));

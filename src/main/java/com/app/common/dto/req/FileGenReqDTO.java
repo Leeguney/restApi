@@ -27,4 +27,10 @@ public class FileGenReqDTO {
 	@Schema(description = "파일명", example = "")
 	private String fileNm;
 	
+	@Schema(description = "메소드명", example = "")
+	private String methodNm = "methodNm";
+	
+	@Schema(description = "dto 문자열", example = "")
+	private String camelStr;
+	
 }

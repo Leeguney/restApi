@@ -242,4 +242,19 @@ public class CommonUtil {
         }
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
+    
+    /**
+     * 맨 앞글자 대문자로 변경
+     * 
+     * @param String str
+     * @return String
+     * @author guney
+     * @date 2024. 5. 22.
+     */
+    public static String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
 }
