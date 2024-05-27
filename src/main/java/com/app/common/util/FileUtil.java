@@ -85,6 +85,7 @@ public class FileUtil {
     public static void writeFile(File file, String content) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(content.getBytes());
+            fos.flush();
         }
     }
 
@@ -100,6 +101,7 @@ public class FileUtil {
     public static void appendToFile(File file, String content) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(file, true)) {
             fos.write(content.getBytes());
+            fos.flush();
         }
     }
     

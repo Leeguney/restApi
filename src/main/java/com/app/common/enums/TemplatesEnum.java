@@ -15,7 +15,7 @@ public enum TemplatesEnum {
 
     CONTROLLER  ("controller"  , "Controller"   , "templates/vm/controller.vm"),
     SERVICE     ("service"     , "Service"      , "templates/vm/service.vm"),
-    IMPLEMENT   ("serviceimpl" , "ServiceImpl"  , "templates/vm/implement.vm"),
+    IMPLEMENT   ("impl"        , "ServiceImpl"  , "templates/vm/implement.vm"),
     REPOSITORY  ("repository"  , "Mapper"       , "templates/vm/repository.vm"),
     DTO         ("dto"         , "DTO"          , "templates/vm/dto.vm");
 
