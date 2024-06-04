@@ -72,14 +72,10 @@ public class ApiDocumentResponseDTO {
     public static class Error<T> {
 
         private HeaderError header;
+        
         private T data;
+        
         private Object page;
-
-        private String code;
-
-        public Error(String code) {
-            this.code = code;
-        }
 
         @Getter
         @Builder
@@ -92,7 +88,7 @@ public class ApiDocumentResponseDTO {
 
             @Builder.Default
             @Schema(description = "메시지코드", example = "DEFAULT")
-            private String code = HttpStatus.BAD_REQUEST.getReasonPhrase();
+            private String code = HttpStatus.BAD_REQUEST.name();
 
             @Schema(description = "응답메세지", example = "관리자에게 문의 해주세요")
             private String message;
@@ -111,15 +107,10 @@ public class ApiDocumentResponseDTO {
     public static class Error400<T> {
 
         private HeaderError400 header;
+        
         private T data;
+        
         private Object page;
-
-        @JsonIgnore
-        private String code;
-
-        public Error400(String code) {
-            this.code = code;
-        }
 
         @Getter
         @Schema(name = "ApiBodyDocumentDTO.HeaderError400", description = "Bad Request")
@@ -148,15 +139,10 @@ public class ApiDocumentResponseDTO {
     public static class Error401<T> {
 
         private HeaderError401 header;
+        
         private T data;
+        
         private Object page;
-
-        @JsonIgnore
-        private String code;
-
-        public Error401(String code) {
-            this.code = code;
-        }
 
         @Getter
         @Schema(name = "ApiBodyDocumentDTO.HeaderError401", description = "Unauthorized")
@@ -185,15 +171,10 @@ public class ApiDocumentResponseDTO {
     public static class Error403<T> {
 
         private HeaderError403 header;
+        
         private T data;
+        
         private Object page;
-
-        @JsonIgnore
-        private String code;
-
-        public Error403(String code) {
-            this.code = code;
-        }
 
         @Getter
         @Schema(name = "ApiBodyDocumentDTO.HeaderError403", description = "Forbidden")
@@ -222,15 +203,10 @@ public class ApiDocumentResponseDTO {
     public static class Error404<T> {
 
         private HeaderError404 header;
+        
         private T data;
+        
         private Object page;
-
-        @JsonIgnore
-        private String code;
-
-        public Error404(String code) {
-            this.code = code;
-        }
 
         @Getter
         @Schema(name = "ApiBodyDocumentDTO.HeaderError404", description = "Not Found")
@@ -259,15 +235,10 @@ public class ApiDocumentResponseDTO {
     public static class Error405<T> {
 
         private HeaderError401 header;
+        
         private T data;
+        
         private Object page;
-
-        @JsonIgnore
-        private String code;
-
-        public Error405(String code) {
-            this.code = code;
-        }
 
         @Getter
         @Schema(name = "ApiBodyDocumentDTO.HeaderError405", description = "Method Not Allowed")
@@ -296,15 +267,10 @@ public class ApiDocumentResponseDTO {
     public static class Error415<T> {
 
         private HeaderError401 header;
+        
         private T data;
+        
         private Object page;
-
-        @JsonIgnore
-        private String code;
-
-        public Error415(String code) {
-            this.code = code;
-        }
 
         @Getter
         @Schema(name = "ApiBodyDocumentDTO.HeaderError415", description = "Unsupported Media Type")
@@ -333,14 +299,10 @@ public class ApiDocumentResponseDTO {
     public static class Error500<T> {
 
         private HeaderError500 header;
+        
         private T data;
+        
         private Object page;
-
-        private String code;
-
-        public Error500(String code) {
-            this.code = code;
-        }
 
         @Getter
         @Schema(name = "ApiBodyDocumentDTO.HeaderError500", description = "Internal Server Error")

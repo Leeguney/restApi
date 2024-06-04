@@ -21,31 +21,31 @@ import com.app.common.dto.ApiDocumentResponseDTO.Error.HeaderError;;
 public class ExceptionController {
 //  @ExceptionHandler({NoHandlerFoundException.class})
 //  @ResponseStatus(HttpStatus.NOT_FOUND)
-//  public ResultJson handleNoHandlerFound(NoHandlerFoundException e, WebRequest request) {
-//    return new ResultJson(false, e.getLocalizedMessage());
+//  public Error<Object> handleNoHandlerFound(NoHandlerFoundException e, WebRequest request) {
+//    return new Error<Object>();
 //  }
   
 //  @ExceptionHandler({PermissionDeniedException.class})
 //  @ResponseStatus(HttpStatus.FORBIDDEN)
-//  public ResultJson handlePermissionDenied(PermissionDeniedException e, WebRequest request) {
-//    return new ResultJson(false, e.getLocalizedMessage());
+//  public Error<Object> handlePermissionDenied(PermissionDeniedException e, WebRequest request) {
+//    return new Error<Object>();
 //  }
   
 //  @ExceptionHandler({AccessDeniedException.class})
 //  @ResponseStatus(HttpStatus.UNAUTHORIZED)
-//  public ResultJson handleUnauthorized(AccessDeniedException e, WebRequest request) {
-//    return new ResultJson(false, e.getLocalizedMessage());
+//  public Error<Object> handleUnauthorized(AccessDeniedException e, WebRequest request) {
+//    return new Error<Object>();
 //  }
   
 //  @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
 //  @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-//  public ResultJson handleMethodNotAllowed(HttpRequestMethodNotSupportedException e, WebRequest request) {
-//    return new ResultJson(false, e.getLocalizedMessage());
+//  public Error<Object> handleMethodNotAllowed(HttpRequestMethodNotSupportedException e, WebRequest request) {
+//    return new Error<Object>();
 //  }
   
   @ExceptionHandler({MethodArgumentNotValidException.class})
   @ResponseStatus(HttpStatus.OK)
-  public Error handleMethodNotInvaild(MethodArgumentNotValidException e, WebRequest request) {
+  public Error<Object> handleMethodNotInvaild(MethodArgumentNotValidException e, WebRequest request) {
       String error = null;
       
       if (ObjectUtils.isNotEmpty(e.getBindingResult()) && !e.getBindingResult().getFieldErrors().isEmpty()) {
@@ -56,7 +56,7 @@ public class ExceptionController {
               .collect(Collectors.joining());
       }
       
-      Error<Object> er = new Error<>(String.valueOf(HttpStatus.OK.value()));
+      Error<Object> er = new Error<>();
       er.setHeader(HeaderError.builder().message(error).build());
       
       return er;
@@ -64,8 +64,8 @@ public class ExceptionController {
   
 //  @ExceptionHandler({Exception.class})
 //  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//  public ResultJson handleException(Exception e, WebRequest request) {
+//  public Error<Object> handleException(Exception e, WebRequest request) {
 //    e.printStackTrace();
-//    return new ResultJson(false, e.getLocalizedMessage());
+//    return new Error<Object>();
 //  }
 }
