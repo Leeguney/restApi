@@ -35,4 +35,8 @@ public class RequestLoggingAspect {
         return uuidThreadLocal.get(); // 스레드 로컬 변수에서 UUID를 가져옴
     }
     
+    public void unload() {
+    	uuidThreadLocal.remove(); // Compliant
+    }
+    
 }
