@@ -45,7 +45,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://vue-front-807ffc6b572e.herokuapp.com")
+                .allowedOrigins("https://vue-front-807ffc6b572e.herokuapp.com", "https://guney.kro.kr")
 //                .allowedOrigins("http://localhost")
                 .allowedMethods("*"); //"GET", "POST", "PUT", "DELETE", "FETCH"
     }
