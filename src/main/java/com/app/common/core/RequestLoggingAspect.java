@@ -30,10 +30,8 @@ public class RequestLoggingAspect {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         
         String requestURL = request.getRequestURL().toString();
-        String clientDomain = request.getHeader("X-Forwarded-Host");
         
-        log.info(request.getHeader("Custom-Client-Domain"));
-        log.info("Request UUID : {} - RequestURL : {} - ClientDomain : {} - IP : {} - Package Info : {}", uuid, requestURL, clientDomain, IP.get(), joinPoint.getSignature());
+        log.info("Request UUID : {} - RequestURL : {} - IP : {} - Package Info : {}", uuid, requestURL, IP.get(), joinPoint.getSignature());
     }
 
     public static String getCurrentUUID() {
