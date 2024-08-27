@@ -131,6 +131,7 @@ public class SwaggerConfig {
         try (ScanResult scanResult = new ClassGraph().acceptPackages("com.app.*").scan()) {
             for (ClassInfo classInfo : scanResult.getAllClasses()) {
                 Class<?> clazz = classInfo.loadClass();
+                
                 // 클래스 이름에 "DTO"가 포함된 경우에만 추가
                 if (clazz.getSimpleName().toUpperCase().contains("DTO")) {
                     String schemaName = clazz.getSimpleName();
@@ -147,12 +148,25 @@ public class SwaggerConfig {
     private Schema<?> convertClassToSchema(Class<?> clazz) {
         Schema<Object> schema = new Schema<>();
         Map<String, Schema> properties = new HashMap<>();
+
+        Class<io.swagger.v3.oas.annotations.media.Schema> schemaClass = io.swagger.v3.oas.annotations.media.Schema.class;
+        
         for (Field field : clazz.getDeclaredFields()) {
             Schema<?> fieldSchema = new Schema<>();
             fieldSchema.setType(getSchemaType(field.getType()));
+            
+            // @Schema 어노테이션이 적용된 경우 description 값을 설정
+            if (field.isAnnotationPresent(schemaClass)) {
+                io.swagger.v3.oas.annotations.media.Schema annotation = field.getAnnotation(schemaClass);
+                fieldSchema.setDescription(annotation.description());
+                fieldSchema.setExample(annotation.example());
+            }
+            
             properties.put(field.getName(), fieldSchema);
         }
+        
         schema.setProperties(properties);
+        
         return schema;
     }
 

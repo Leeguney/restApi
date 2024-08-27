@@ -1,13 +1,16 @@
 package com.app.redocly.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.common.core.annotations.ApiDocumentResponse;
+import com.app.redocly.dto.req.SampleDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,8 +33,8 @@ public class RedoclyController {
 	
 	@ApiDocumentResponse
 	@Operation(summary = "샘출", description = "샘출 등록")
-	@PostMapping(value = "/add")
-	public void test2(){
+	@PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
+	public void test2(@RequestBody SampleDTO sampleDTO){
 		
 	}
 	
