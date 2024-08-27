@@ -1,5 +1,7 @@
 package com.app.common.core;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
 
 import org.aspectj.lang.JoinPoint;
@@ -31,7 +33,19 @@ public class RequestLoggingAspect {
         
         String requestURL = request.getRequestURL().toString();
         
-        log.info("Request UUID : {} - RequestURL : {} - IP : {} - Package Info : {}", uuid, requestURL, IP.get(), joinPoint.getSignature());
+        String referer = request.getHeader("Referer");
+        String clientDomain = null;
+        
+        if (referer != null) {
+            try {
+                URL url = new URL(referer);
+                clientDomain = url.getHost();
+            } catch (MalformedURLException e) {
+                log.error("RequestLoggingAspect logRequest ERROR : {}", e.getMessage());
+            }
+        }
+        
+        log.info("Request UUID : {} - RequestURL : {} - ClientDomain : {} - IP : {} - Package Info : {}", uuid, requestURL, clientDomain, IP.get(), joinPoint.getSignature());
     }
 
     public static String getCurrentUUID() {
