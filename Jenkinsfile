@@ -32,17 +32,6 @@ pipeline {
                                 
                                 # ✅ nohup으로 Gradle 빌드 실행
                                 ./gradlew clean build -x test > ${APP_DIR}/gradle_build.log 2>&1
-                                
-                                echo "Gradle 빌드 시작됨, 로그 모니터링 중..."
-                                
-
-                                # ✅ 빌드 완료 확인
-                                if tail -n 20 ${APP_DIR}/gradle_build.log | grep 'BUILD SUCCESSFUL'; then
-                                    echo "Gradle 빌드 완료됨"
-                                else
-                                    echo "Gradle 빌드 실패"
-                                    exit 1
-                                fi
                             EOF
                         '''
                     }
@@ -57,16 +46,6 @@ pipeline {
                     sh '''
                         ssh -i /home/ec2-user/.ssh/id_rsa ${DEPLOY_SERVER} "bash -s" <<EOF
                             echo "[4] 기존 실행 중인 스프링 부트 서버 종료 시도"
-                            pgrep -f 'build/libs/restApi.jar' | xargs kill -9 || true
-
-                            echo "[5] 새로운 JAR 실행"
-                            nohup java -jar ${APP_DIR}/build/libs/restApi.jar --server.port=8081 --spring.profiles.active=prod > ${APP_DIR}/app.log 2>&1 & disown
-                            
-                            echo "[6] 실행된 프로세스 확인"
-                            ps aux | grep java
-                            
-                            echo "[7] nohup 로그 확인"
-                            tail -n 20 ${APP_DIR}/app.log
                         EOF
                     '''
                 }
