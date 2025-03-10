@@ -28,7 +28,7 @@ pipeline {
                                 echo "[3] 새 JAR 파일 빌드 (기존 JAR 유지)"
                                 cd ${APP_DIR}
                                 chmod +x gradlew
-                                ./gradlew clean build -x test || { echo "Gradle Build Failed"; exit 1; }
+                                #./gradlew clean build -x test || { echo "Gradle Build Failed"; exit 1; }
                             
                                 echo "[4] 기존 JAR 파일을 이전 버전으로 백업"
                                 if [ -f build/libs/restApi.jar ]; then
