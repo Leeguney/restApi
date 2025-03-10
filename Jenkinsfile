@@ -27,7 +27,7 @@ pipeline {
                         # 3️⃣ 기존 실행 중인 애플리케이션 종료 후 새 JAR 실행
                         pkill -f 'java -jar' || true
                         cd ${APP_DIR}
-                        nohup java -jar build/libs/restApi.jar --spring.profiles.active=prod > app.log 2>&1 &
+                        nohup java -jar build/libs/restApi.jar --server.port=8081 --spring.profiles.active=prod > app.log 2>&1 &
                         sleep 3
                         ps aux | grep java
                         EOF
