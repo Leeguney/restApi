@@ -37,7 +37,7 @@ pipeline {
                                 pgrep -f 'build/libs/restApi.jar' | xargs kill -9 || true &&
     
                                 echo '[5] 새로운 JAR 실행' &&
-                                nohup java -jar ${APP_DIR}/build/libs/restApi.jar --server.port=8081 --spring.profiles.active=prod > ${APP_DIR}/app.log 2>&1 & disown &&
+                                sudo nohup java -jar ${APP_DIR}/build/libs/restApi.jar --server.port=8081 --spring.profiles.active=prod > ${APP_DIR}/app.log 2>&1 & disown &&
     
                                 echo '[6] 실행된 프로세스 확인' &&
                                 ps aux | grep java &&
