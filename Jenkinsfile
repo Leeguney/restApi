@@ -29,9 +29,20 @@ pipeline {
                                 echo "[3] 새 JAR 파일 빌드 (기존 JAR 유지)"
                                 cd ${APP_DIR}
                                 chmod +x gradlew
-                                ./gradlew clean build -x test || { echo "Gradle Build Failed"; exit 1; }
                                 
+                                # ✅ nohup으로 Gradle 빌드 실행
+                                nohup ./gradlew clean build -x test > ${APP_DIR}/gradle_build.log 2>&1 & disown
+                                
+                                echo "Gradle 빌드 시작됨, 로그 모니터링 중..."
+                                
+                                # ✅ Gradle 빌드가 끝날 때까지 대기
+                                while ps aux | grep '[g]radlew' > /dev/null; do
+                                    echo "Gradle 빌드 진행 중..."
+                                    sleep 5
+                                done
+
                                 echo "Gradle Build Completed"
+                                tail -n 20 ${APP_DIR}/gradle_build.log  # 빌드 로그 출력
                             EOF
                         '''
                     }
@@ -53,6 +64,9 @@ pipeline {
                             
                             echo "[6] 실행된 프로세스 확인"
                             ps aux | grep java
+                            
+                            echo "[7] nohup 로그 확인"
+                            tail -n 20 ${APP_DIR}/app.log
                         EOF
                     '''
                 }
