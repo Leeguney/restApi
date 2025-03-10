@@ -29,7 +29,7 @@ pipeline {
                 script {
                     sh '''
                     cd restApi
-                    ./gradlew clean build -x test
+                    sudo ./gradlew clean build -x test
                     '''
                 }
             }
