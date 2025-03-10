@@ -36,7 +36,7 @@ pipeline {
                                 echo "Gradle 빌드 시작됨, 로그 모니터링 중..."
                                 
                                 # ✅ 빌드 완료 확인
-                                echo cat ${APP_DIR}/gradle_build.log | grep 'BUILD SUCCESSFUL'
+                                cat ${APP_DIR}/gradle_build.log | grep 'BUILD SUCCESSFUL'
                             EOF
                         '''
                     }
