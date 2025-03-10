@@ -38,13 +38,13 @@ pipeline {
                 }
             }
         }
-        
+
         // 2️⃣ Deploy Stage
         stage('Deploy to EC2') {
             steps {
                 script {
                     sh '''
-                        ssh -i /home/ec2-user/.ssh/id_rsa ${DEPLOY_SERVER} "bash -s" <<EOF
+                        ssh -i /home/ec2-user/.ssh/id_rsa ${DEPLOY_SERVER} "bash -s"
                             echo "[4] 기존 실행 중인 스프링 부트 서버 종료 시도"
                             pgrep -f 'build/libs/restApi.jar' | xargs kill -9 || true
 
@@ -56,7 +56,6 @@ pipeline {
                             
                             echo "[7] nohup 로그 확인"
                             tail -n 20 ${APP_DIR}/app.log
-                        EOF
                     '''
                 }
             }
