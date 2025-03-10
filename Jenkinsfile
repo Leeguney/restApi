@@ -14,35 +14,43 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
                         sh '''
+                            # 1️⃣ Gradle 빌드 실행 (SSH 1)
                             ssh -i /home/ec2-user/.ssh/id_rsa ${DEPLOY_SERVER} "bash -s" <<EOF
-                                set +e
-                        
                                 echo "[1] 기존 실행 중인 스프링 부트 서버 종료 시도"
                                 pgrep -f 'build/libs/restApi.jar' | xargs kill -9 || true
-                            
+                        
                                 echo "[2] 기존 프로젝트 유지한 채 소스 최신화"
                                 cd ${APP_DIR}
                                 git reset --hard origin/${BRANCH}  # 충돌 방지
                                 git pull origin ${BRANCH}
-                            
+                        
                                 echo "[3] 새 JAR 파일 빌드 (기존 JAR 유지)"
                                 cd ${APP_DIR}
                                 chmod +x gradlew
-                                #./gradlew clean build -x test || { echo "Gradle Build Failed"; exit 1; }
-                            
+                                ./gradlew clean build -x test || { echo "Gradle Build Failed"; exit 1; }
+                        
+                                echo "Gradle Build Complete"
+                            EOF
+                        
+                            sleep 5  # SSH 세션 종료 방지
+                        
+                            # 2️⃣ Spring Boot 실행 (SSH 2)
+                            ssh -i /home/ec2-user/.ssh/id_rsa ${DEPLOY_SERVER} "bash -s" <<EOF
                                 echo "[4] 기존 JAR 파일을 이전 버전으로 백업"
-                                if [ -f build/libs/restApi.jar ]; then
-                                    mv build/libs/restApi.jar build/libs/restApi_prev.jar
+                                if [ -f ${APP_DIR}/build/libs/restApi.jar ]; then
+                                    mv ${APP_DIR}/build/libs/restApi.jar ${APP_DIR}/build/libs/restApi_prev.jar
                                 fi
-                            
+                        
                                 echo "[5] 새로운 JAR 실행"
-                                nohup java -jar build/libs/restApi.jar --server.port=8081 --spring.profiles.active=prod > app.log 2>&1 & disown
+                                nohup java -jar ${APP_DIR}/build/libs/restApi.jar --server.port=8081 --spring.profiles.active=prod > ${APP_DIR}/app.log 2>&1 & disown
+                        
+                                sleep 5
                         
                                 echo "[6] 실행된 프로세스 확인"
                                 ps aux | grep java
-                            
+                        
                                 echo "[7] nohup 로그 확인"
-                                tail -n 20 app.log
+                                tail -n 20 ${APP_DIR}/app.log
                             EOF
                         '''
                     }
