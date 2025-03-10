@@ -33,10 +33,6 @@ pipeline {
                                 # ✅ nohup으로 Gradle 빌드 실행
                                 nohup ./gradlew clean build -x test > ${APP_DIR}/gradle_build.log 2>&1 & disown
                                 
-                                echo "Gradle 빌드 시작됨, 로그 모니터링 중..."
-                                
-                                # ✅ 빌드 완료 확인
-                                cat ${APP_DIR}/gradle_build.log | grep 'BUILD SUCCESSFUL'
                             EOF
                         '''
                     }
