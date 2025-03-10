@@ -6,13 +6,20 @@ pipeline {
         BRANCH = 'master'
         DEPLOY_SERVER = 'ec2-user@50.17.47.14'
         APP_DIR = '/home/ec2-user/restApi'
+        GIT_CREDENTIALS_ID = 'github-access-token'  // 저장된 credentials ID 사용
     }
 
     stages {
         stage('Clone Repository') {
             steps {
                 script {
-                    sh 'rm -rf restApi && git clone -b ${BRANCH} ${REPO_URL}'
+                    // Jenkins Credentials 사용하여 GitHub 인증 처리
+                    withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                        sh '''
+                        rm -rf restApi
+                        git clone -b ${BRANCH} https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/supurjsgml/restApi.git
+                        '''
+                    }
                 }
             }
         }
