@@ -5,7 +5,7 @@ pipeline {
         BRANCH = 'master'
         DEPLOY_SERVER = 'ec2-user@54.234.44.252'
         APP_DIR = '/home/ec2-user/restApi'
-        JAR_DIR = ${JAR_DIR}'/build/libs'
+        JAR_DIR = APP_DIR'/build/libs'
         GIT_CREDENTIALS_ID = 'github-access-token'
         BUILD_DIR = 'build/libs' // JAR 빌드 경로
     }
